@@ -1,0 +1,46 @@
+services:
+  pagamentos_db:
+    image: mongo:latest
+    restart: always
+    container_name: pagamentos_db
+    volumes:
+      - pagamentosmongo:/data/db
+      - ./init_db.js:/docker-entrypoint-initdb.d/init_db.js
+    ports:
+     - '27017:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_PASSWORD}
+      MONGO_INITDB_DATABASE: ${DB_NAME}
+    networks:
+      - pagamentos-network
+  pagamentos_api:
+    build: .
+    restart: always
+    container_name: pagamentos_api
+    networks:
+      - pagamentos-network
+      - broker_network
+    depends_on:
+      - pagamentos_db
+    ports:
+     - '9393:80'
+    environment:
+       DB_HOST: ${DB_HOST}
+       DB_PORT: ${DB_PORT}
+       DB_USER: ${DB_USER}
+       DB_PASSWORD: ${DB_PASSWORD}
+       DB_NAME: ${DB_NAME}   
+       BROKER_HOSTNAME: ${BROKER_HOSTNAME}
+       BROKER_PORT: ${BROKER_PORT}
+       BROKER_USERNAME: ${BROKER_USERNAME}
+       BROKER_PASSWORD: ${BROKER_PASSWORD}
+volumes:
+  pagamentosmongo:  
+
+networks:
+  pagamentos-network:
+    driver: bridge 
+  broker_network:
+    external: true
+    name: rabbit_broker_network
