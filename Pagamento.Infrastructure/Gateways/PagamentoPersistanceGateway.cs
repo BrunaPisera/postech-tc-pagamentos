@@ -18,7 +18,7 @@ namespace Pagamentos.Infrastructure.Gateways
             var userName = mongoDbConfig["UserName"];
             var password = mongoDbConfig["Password"];
 
-            var mongoClient = new MongoClient($"mongodb://{userName}:{password}@{hostName}:27017/?authMechanism=SCRAM-SHA-256");
+            var mongoClient = new MongoClient($"mongodb+srv://{userName}:{password}@{hostName}/?retryWrites=true&w=majority&appName=PagamentosCluster");
 
             var mongoDatabase = mongoClient.GetDatabase("PagamentosDB");
 
