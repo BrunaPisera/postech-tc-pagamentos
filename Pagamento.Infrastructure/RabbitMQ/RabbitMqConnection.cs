@@ -15,11 +15,10 @@ namespace Pagamentos.Infrastructure.RabbitMQ
 
         public RabbitMqConnection(IConfiguration configuration)
         {
-            var rabbitMQConfig = configuration.GetSection("RabbitMQConfig");
-            var hostName = rabbitMQConfig["HostName"];
-            var port = int.Parse(rabbitMQConfig["Port"]);
-            var userName = rabbitMQConfig["UserName"];
-            var password = rabbitMQConfig["Password"];
+            var hostName = configuration["BROKER_HOSTNAME"];
+            var port = int.Parse(configuration["BROKER_PORT"]!);
+            var userName = configuration["BROKER_USERNAME"];
+            var password = configuration["BROKER_PASSWORD"];
 
             var factory = new ConnectionFactory
             {

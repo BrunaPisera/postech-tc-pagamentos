@@ -11,11 +11,11 @@ namespace Pagamentos.Infrastructure.Gateways
     {
         private const int PAYMENT_TIMEOUT_MINUTES = 15;
 
-        public IConfigurationSection Configuration { get; }
+        public IConfiguration Configuration { get; }
 
         public MercadoPagoPagamentoGateway(IConfiguration configuration)
         {
-            Configuration = configuration.GetSection("MercadoPagoAPI");
+            Configuration = configuration;
         }
 
         public async Task<string> GerarQrCodeParaPagamentoAsync(DadosPedidoDto dadosPedidoDto)

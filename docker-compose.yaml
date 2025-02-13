@@ -35,6 +35,10 @@ services:
        BROKER_PORT: ${BROKER_PORT}
        BROKER_USERNAME: ${BROKER_USERNAME}
        BROKER_PASSWORD: ${BROKER_PASSWORD}
+       USERID: ${USERID}
+       ACCESS_KEY: ${ACCESS_KEY}
+       NOTIFICATION_URL: ${NOTIFICATION_URL}
+       POS_ID: ${POS_ID}
 volumes:
   pagamentosmongo:  
 

@@ -13,10 +13,9 @@ namespace Pagamentos.Infrastructure.Gateways
 
         public PagamentoPersistanceGateway(IConfiguration configuration)
         {
-            var mongoDbConfig = configuration.GetSection("MongoDBConfig");
-            var hostName = mongoDbConfig["HostName"];
-            var userName = mongoDbConfig["UserName"];
-            var password = mongoDbConfig["Password"];
+            var hostName = configuration["DB_HOST"];
+            var userName = configuration["DB_USER"];
+            var password = configuration["DB_PASSWORD"];
 
             var mongoClient = new MongoClient($"mongodb+srv://{userName}:{password}@{hostName}/?retryWrites=true&w=majority&appName=PagamentosCluster");
 
