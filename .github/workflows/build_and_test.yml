@@ -1,6 +1,9 @@
 name: Build and test .NET
 
 on:
+  push:
+    branches:
+      - master
   pull_request:
     branches: [ "master", "develop", "actions", "f_*"]
 
