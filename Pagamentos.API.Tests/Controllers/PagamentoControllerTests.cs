@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Pagamentos.API.Controllers;
+using Pagamentos.Application.Exceptions;
 using Pagamentos.Infrastructure.Models.MercadoPagoAPI;
 using Pagamentos.UseCases.Dtos;
 using Pagamentos.UseCases.Interfaces;
@@ -90,5 +92,76 @@ namespace Pagamentos.API.Tests.Controllers
             Assert.That(result, Is.TypeOf<OkResult>());
         }
         #endregion
+
+        [Test]
+        public async Task ConfirmarPagamento_ThrowsPagamentoNaoEncontradoException_ReturnsInternalServerError()
+        {
+            var idPagamento = Guid.NewGuid();
+            var notificacao = new MPNotificacaoDePagamento { topic = "payment" };
+
+            _pagamentoUseCasesMock
+                .Setup(x => x.ConfirmarPagamentoAsync(idPagamento))
+                .ThrowsAsync(new PagamentoNaoEncontradoException("Pagamento não encontrado."));
+
+            var result = await _controller.ConfirmarPagamento(idPagamento, notificacao);
+
+            var statusCodeResult = result as ObjectResult;
+            Assert.That(statusCodeResult, Is.Not.Null);
+            Assert.That(statusCodeResult?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(statusCodeResult?.Value, Is.EqualTo("Pagamento não encontrado."));
+        }
+
+        [Test]
+        public async Task ConfirmarPagamento_ThrowsConfirmarPagamentoException_ReturnsInternalServerError()
+        {
+            var idPagamento = Guid.NewGuid();
+            var notificacao = new MPNotificacaoDePagamento { topic = "payment" };
+
+            _pagamentoUseCasesMock
+                .Setup(x => x.ConfirmarPagamentoAsync(idPagamento))
+                .ThrowsAsync(new ConfirmarPagamentoException("Erro ao confirmar pagamento."));
+
+            var result = await _controller.ConfirmarPagamento(idPagamento, notificacao);
+
+            var statusCodeResult = result as ObjectResult;
+            Assert.That(statusCodeResult, Is.Not.Null);
+            Assert.That(statusCodeResult?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(statusCodeResult?.Value, Is.EqualTo("Erro ao confirmar pagamento."));
+        }
+
+        [Test]
+        public async Task ConfirmarPagamento_ThrowsGenericException_ReturnsInternalServerError()
+        {
+            var idPagamento = Guid.NewGuid();
+            var notificacao = new MPNotificacaoDePagamento { topic = "payment" };
+
+            _pagamentoUseCasesMock
+                .Setup(x => x.ConfirmarPagamentoAsync(idPagamento))
+                .ThrowsAsync(new Exception("Erro genérico."));
+
+            var result = await _controller.ConfirmarPagamento(idPagamento, notificacao);
+
+            var statusCodeResult = result as ObjectResult;
+            Assert.That(statusCodeResult, Is.Not.Null);
+            Assert.That(statusCodeResult?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(statusCodeResult?.Value, Is.EqualTo("Erro ao processar a requisição, tente novamente mais tarde."));
+        }
+
+        [Test]
+        public async Task GerarPagamento_ThrowsGenericException_ReturnsInternalServerError()
+        {
+            var dadosPedidoDto = new DadosPedidoDto { IdPedido = "12345" };
+
+            _pagamentoUseCasesMock
+                .Setup(x => x.GerarQrCodeParaPagamento(dadosPedidoDto))
+                .ThrowsAsync(new Exception("Erro genérico."));
+
+            var result = await _controller.GerarPagamento(dadosPedidoDto);
+
+            var statusCodeResult = result as ObjectResult;
+            Assert.That(statusCodeResult, Is.Not.Null);
+            Assert.That(statusCodeResult?.StatusCode, Is.EqualTo(StatusCodes.Status500InternalServerError));
+            Assert.That(statusCodeResult?.Value, Is.EqualTo("Erro ao processar a requisição, tente novamente mais tarde."));
+        }
     }
 }
