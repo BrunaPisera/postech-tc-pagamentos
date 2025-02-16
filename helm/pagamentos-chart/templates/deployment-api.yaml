@@ -1,0 +1,63 @@
+apiVersion: apps/v1  # Define a versão da API usada para o Deployment.
+kind: Deployment     # Define o tipo do recurso como Deployment.
+metadata:
+  name: {{ .Values.apiName }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ .Values.apiName }}               # Rótulo para identificar o Deployment.
+spec:
+  replicas: 1                # Define o número desejado de réplicas de Pods.
+  selector:                  # Critério para encontrar os Pods gerenciados por este Deployment.
+    matchLabels:
+      app: {{ .Values.apiName }}             # O Deployment gerenciará os Pods com este rótulo.
+  template:                  # Define o template de Pods que o Deployment gerenciará.
+    metadata:
+      labels:
+        app: {{ .Values.apiName }}           # Os Pods gerenciados terão este rótulo.
+    spec:
+      containers:          
+      - name: {{ .Values.apiName }}         
+        image: "{{ .Values.apiImage.name }}:{{ .Values.apiImage.tag }}"
+        ports:
+        - containerPort: 80
+        envFrom:
+          - configMapRef: 
+              name: {{ .Values.configmap.name }}          
+          - secretRef: 
+              name: {{ .Values.secret.name }}
+        env:
+            - name: BROKER_HOSTNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: pagamentos-config-map
+                  key: BROKER_HOSTNAME
+            - name: BROKER_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: pagamentos-config-map
+                  key: BROKER_PORT
+            - name: BROKER_USERNAME
+              valueFrom:
+                configMapKeyRef:
+                  name: pagamentos-config-map
+                  key: BROKER_USERNAME
+            - name: BROKER_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: pagamentos-config-map
+                  key: BROKER_PASSWORD
+            - name: BROKER_VIRTUALHOST
+              valueFrom:
+                configMapKeyRef:
+                  name: pagamentos-config-map
+                  key: BROKER_VIRTUALHOST
+        resources:
+          limits:
+            cpu: "600m"
+          requests:
+            cpu: "500m"        
+  strategy:                  # Define a estratégia de atualização dos Pods.
+    type: RollingUpdate      # O tipo de estratégia de atualização. "RollingUpdate" atualiza gradualmente os pods.
+    rollingUpdate:           # Configurações para a atualização gradual.
+      maxUnavailable: 1      # Quantos Pods podem estar indisponíveis durante a atualização (no máximo 1).
+      maxSurge: 1            # Quantos Pods adicionais podem ser criados acima do número de réplicas durante a atualização.

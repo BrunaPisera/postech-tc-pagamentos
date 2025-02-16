@@ -1,0 +1,30 @@
+namespace: dev
+
+# API
+apiName: pagamento-api
+apiImage: 
+  name: brunapisera/pagamentos-api
+  tag: latest
+apiNodePort: 30202
+
+# DB
+dbName: PagamentosDB
+# Config map
+configmap:
+  name: pagamentos-config-map
+  data:
+    DB_HOST: atlas-terraform.zrr4s.mongodb.net
+    DB_PASSWORD:
+    DB_USER: postechuser
+    DB_NAME: PagamentosDB
+
+# Secret
+secret:
+  name: secretpagamentos
+
+rabbitmq:
+  username: xtpbliuz 
+  hostname: woodpecker.rmq.cloudamqp.com
+  password: 
+  port: 5672
+  virtualhost: xtpbliuz
