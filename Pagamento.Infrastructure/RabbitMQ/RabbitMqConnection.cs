@@ -19,13 +19,15 @@ namespace Pagamentos.Infrastructure.RabbitMQ
             var port = int.Parse(configuration["BROKER_PORT"]!);
             var userName = configuration["BROKER_USERNAME"];
             var password = configuration["BROKER_PASSWORD"];
+            var virtualHost = Environment.GetEnvironmentVariable("BROKER_VIRTUALHOST");
 
             var factory = new ConnectionFactory
             {
                 HostName = hostName,
                 Port = port,
                 UserName = userName,
-                Password = password
+                Password = password,
+                VirtualHost = virtualHost
             };
 
             _connection = factory.CreateConnection();
