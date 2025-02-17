@@ -29,3 +29,12 @@ rabbitmq:
   password: 
   port: 5672
   virtualhost: xtpbliuz
+
+# Mercado Pago config map
+mpConfigMap:
+  name: pagamentos-config-map
+  data:
+    USERID: "1954504909"
+    ACCESS_KEY: ""
+    NOTIFICATION_URL: "https://12gk1lj17d.execute-api.us-east-1.amazonaws.com/pagamentos"
+    POS_ID: "TOTEM1"
