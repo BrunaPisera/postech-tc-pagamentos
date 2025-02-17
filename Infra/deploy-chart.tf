@@ -30,4 +30,9 @@ resource "helm_release" "pagamentos" {
     name  = "rabbitmq.password"
     value = var.brokerpassword
   }
+
+  set {
+    name  = "mpConfigMap.data.ACCESS_KEY"
+    value = var.apikeymp
+  }
 }
