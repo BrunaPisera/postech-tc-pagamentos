@@ -54,7 +54,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: | 
           cd Infra 
-          terraform plan -var="dbpassword=${{ secrets.DB_PASSWORD }}" -var="brokerpassword=${{ secrets.BROKER_PASSWORD }}" -no-color -input=false
+          terraform plan -var="apikeymp=${{ secrets.API_KEY_MP }}" -var="dbpassword=${{ secrets.DB_PASSWORD }}" -var="brokerpassword=${{ secrets.BROKER_PASSWORD }}" -no-color -input=false
         continue-on-error: true
 
       - name: Update Pull Request
@@ -95,4 +95,4 @@ jobs:
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
         run: | 
           cd Infra 
-          terraform apply -var="dbpassword=${{ secrets.DB_PASSWORD }}" -var="brokerpassword=${{ secrets.BROKER_PASSWORD }}" -auto-approve -input=false
+          terraform apply -var="apikeymp=${{ secrets.API_KEY_MP }}" -var="dbpassword=${{ secrets.DB_PASSWORD }}" -var="brokerpassword=${{ secrets.BROKER_PASSWORD }}" -auto-approve -input=false

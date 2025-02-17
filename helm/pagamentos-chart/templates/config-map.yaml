@@ -13,3 +13,7 @@ data:
   BROKER_USERNAME: "{{ .Values.rabbitmq.username }}"
   BROKER_PASSWORD: "{{ .Values.rabbitmq.password }}"
   BROKER_VIRTUALHOST: "{{ .Values.rabbitmq.virtualhost }}"
+  USERID: "{{ .Values.mpConfigMap.data.USERID }}"
+  ACCESS_KEY: "{{ .Values.mpConfigMap.data.ACCESS_KEY }}"
+  NOTIFICATION_URL: "{{ .Values.mpConfigMap.data.NOTIFICATION_URL }}"
+  POS_ID: "{{ .Values.mpConfigMap.data.POS_ID }}"

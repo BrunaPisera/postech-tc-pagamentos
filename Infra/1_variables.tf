@@ -11,3 +11,8 @@ variable "brokerpassword" {
   description = "Secret passed from GitHub Actions"
   type        = string
 }
+
+variable "apikeymp" {
+  description = "Secret passed from GitHub Actions"
+  type        = string
+}
